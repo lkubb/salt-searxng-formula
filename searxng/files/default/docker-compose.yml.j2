@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+
+  redis:
+    container_name: redis
+    image: {{ searxng.lookup.containers.redis.image }}
+    command: redis-server --save \'\' --appendonly "no"
+    env_file:
+      - {{ searxng.lookup.paths.config_redis }}
+    networks:
+      - searxng
+    tmpfs:
+      - /var/lib/redis
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+      # - DAC_OVERRIDE
+
+  searxng:
+    container_name: searxng
+    image: {{ searxng.lookup.containers.searxng.image }}
+    networks:
+      - searxng
+    ports:
+     - "{{ searxng.config.server.port }}:8080"
+    volumes:
+      - {{ searxng.lookup.paths.config }}:/etc/searxng:rw
+    env_file:
+      - {{ searxng.lookup.paths.config_searxng }}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      # - DAC_OVERRIDE
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+networks:
+  searxng:
+    ipam:
+      driver: default

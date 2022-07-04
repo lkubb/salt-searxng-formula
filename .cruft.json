@@ -1,0 +1,65 @@
+{
+  "template": "https://github.com/lkubb/salt-template-formula-compose",
+  "commit": "7c15b4ed8e4a1a140324cff2bb17b0fa743494bc",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "_extensions": [
+        "local_extensions.YAMLDumper"
+      ],
+      "_jinja2_env_vars": {
+        "block_start_string": "{!",
+        "block_end_string": "!}",
+        "variable_start_string": "{=",
+        "variable_end_string": "=}",
+        "comment_start_string": "{@",
+        "comment_end_string": "@}"
+      },
+      "name": "SearXNG",
+      "abbr": "searxng",
+      "abbr_pysafe": "searxng",
+      "project_name": "searxng",
+      "containers": "searxng,redis",
+      "git_username": "lkubb",
+      "_lookup": {
+        "containers": {
+          "redis": {
+            "image": "docker.io/library/redis:alpine"
+          },
+          "searxng": {
+            "image": "docker.io/searxng/searxng:latest"
+          }
+        },
+        "paths": {
+          "config": "config"
+        }
+      },
+      "_settings": {
+        "config": {
+          "use_default_settings": true,
+          "general": {
+            "instance_name": "SearXNG"
+          },
+          "redis": {
+            "url": "redis://redis:6379/0"
+          },
+          "search": {
+            "autocomplete": ""
+          },
+          "server": {
+            "base_url": "http://localhost/",
+            "image_proxy": true,
+            "limiter": true,
+            "secret_key": null,
+            "port": "5346"
+          },
+          "ui": {
+            "static_use_hash": true
+          }
+        }
+      },
+      "_template": "https://github.com/lkubb/salt-template-formula-compose"
+    }
+  },
+  "directory": null
+}
