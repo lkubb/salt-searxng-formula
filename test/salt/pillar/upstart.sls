@@ -52,8 +52,6 @@ searxng:
       limiter: true
       port: '5346'
       secret_key: null
-    ui:
-      static_use_hash: true
     use_default_settings: true
 
   tofs:

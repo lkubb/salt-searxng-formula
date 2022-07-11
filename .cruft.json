@@ -52,9 +52,6 @@
             "limiter": true,
             "secret_key": null,
             "port": "5346"
-          },
-          "ui": {
-            "static_use_hash": true
           }
         }
       },

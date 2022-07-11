@@ -51,8 +51,6 @@ values:
       limiter: true
       port: '5346'
       secret_key: null
-    ui:
-      static_use_hash: true
     use_default_settings: true
   # Just here for testing
   added_in_defaults: defaults_value

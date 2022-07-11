@@ -9,6 +9,8 @@ searxng:
       # When applying `clean` states, also remove application data.
       # Setting this to true might incur accidental data loss!
     remove_all_data_for_sure: false
+    # The following values are defaults from this formula. For comments,
+    # see the block about settings.yml below.
   config:
     general:
       instance_name: SearXNG
@@ -22,9 +24,237 @@ searxng:
       limiter: true
       port: '5346'
       secret_key: null
-    ui:
-      static_use_hash: true
     use_default_settings: true
+
+########################################################################################
+# Overview of settings.yml. This might be outdated, for current settings
+# see https://github.com/searxng/searxng/blob/master/searx/settings.yml
+
+      # Load default configuration and merge this one on top.
+      # It is possible to remove some engines from the default config by specifying
+      # use_default_settings as a mapping:
+      # use_default_settings:
+      #   engines:
+      #     remove: []
+      #       # or
+      #     keep-only: []
+    use_default_settings: true
+
+    brand:
+        # If you host your own issue tracker change this URL.
+      issue_url: https://github.com/searxng/searxng/issues
+        # If you host your own documentation change this URL.
+      docs_url: https://docs.searxng.org
+        # If you host your own https://searx.space change this URL.
+      public_instances: https://searx.space
+        # Link to your wiki (or false)
+      wiki_url: https://github.com/searxng/searxng/wiki
+
+    general:
+        # Allow a more detailed log if you run SearXNG directly.
+        # Display detailed error messages in the browser too, so this
+        # must be deactivated in production.
+      debug: false
+      instance_name:  "SearXNG"
+        # Link to privacy policy.
+      privacypolicy_url: false
+        # At default the donation link points to the SearXNG project.
+        # Set value true to use your own donation page written in the
+        # searx/info/en/donate.md, use false to disable the donation link altogether.
+      donation_url: https://docs.searxng.org/donate.html
+        # Contact mailto: address or WEB form.
+      contact_url: false
+        # Enabled by default. Record various anonymous metrics availabled at /stats,
+        # /stats/errors and /preferences.
+      enable_metrics: true
+
+    search:
+        # Filter results: 0 none, 1 moderate, 2 strict
+      safe_search: 0
+        # Existing autocomplete backends, leave blank to turn it off.
+        # dbpedia, duckduckgo, google, startpage, swisscows, qwant, wikipedia
+      autocomplete: ""
+        # minimun characters to type before autocompleter starts
+      autocomplete_min: 4
+        # Default search language - leave blank to detect from browser information or
+        # use codes from git://searx/languages.py
+      default_lang: ""
+        # List of available languages - leave unset to use all codes from
+        # searx/languages.py. Otherwise list codes of available languages.
+        # The `all` value is shown as the Default language in the user interface
+        # (in most cases, it is meant to send the query without a language parameter;
+        # in some cases, it means the English language)
+      languages: ""
+        # Ban time in seconds after engine errors.
+      ban_time_on_fail: 5
+        # Max ban time in seconds after engine errors.
+      max_ban_time_on_fail: 120
+        # Result formats available from web, remove format to deny access
+        # (use lower case). html, csv, json, rss
+      formats:
+        - html
+
+    server:
+        # The base URL where SearXNG is deployed. Used to create correct inbound links.
+        # If you change the value, don’t forget to rebuild instance’s environment
+        # (utils/brand.env)
+      base_url: false
+        # Port number and bind address of the SearXNG web application if you run it
+        # directly using python searx/webapp.py. Doesn’t apply to SearXNG running on
+        # Apache or Nginx.
+      port: 8888
+      bind_address: "127.0.0.1"
+        # Leave empty to let Salt autogenerate it.
+      secret_key: null
+        # Rate limit the number of request on the instance, block some bots.
+        # The Limiter Plugin requires a redis: database.
+      limiter: false
+        # Allow your instance of SearXNG of being able to proxy images. Uses memory.
+      image_proxy: false
+        # 1.0 and 1.1 are supported
+      http_protocol_version: "1.0"
+        # POST queries are more secure as they don't show up in history but may cause
+        # problems when using Firefox containers
+      method: POST
+        # Set additional HTTP headers, see https://github.com/searx/searx/issues/715
+      default_http_headers:
+        X-Content-Type-Options : nosniff
+        X-XSS-Protection : 1; mode=block
+        X-Download-Options : noopen
+        X-Robots-Tag : noindex, nofollow
+        Referrer-Policy : no-referrer
+
+    ui:
+        # SearXNG interface language. If blank, the locale is detected by using the
+        # browser language.
+      default_locale: ""
+        # When true, the result page’s titles contain the query, which decreases privacy
+        # since the browser can record the page titles.
+      query_in_title: false
+        # When true, automatically loads the next page when scrolling to bottom of
+        # the current page.
+      infinite_scroll: false
+        # When enabled, the results are centered instead of being in the left (or RTL)
+        # side of the screen. This setting only affects the desktop layout
+        # (min-width: @tablet)
+      center_alignment: false
+        # Name of the theme you want to use by default on your SearXNG instance.
+      default_theme: simple
+      theme_args:
+          # # Style of simple theme: auto, light, dark
+        simple_style: auto
+        # Open result links in a new tab by default.
+      results_on_new_tab: false
+      static_use_hash: false
+
+      # Lock arbitrary settings on the preferences page. To find the ID of the  user
+      # setting you want to lock, check the ID of the form on the page "preferences".
+    preferences:
+      lock: []
+
+    outgoing:
+        # Global timeout of the requests made to other engines in seconds.
+        #  A bigger timeout will allow to wait for answers from slow engines,
+        # but in consequence will slow SearXNG reactivity
+      request_timeout: 2.0
+      max_request_timeout: 10.0
+        # Suffix to the user-agent SearXNG uses to send requests to other engines. If an
+        # engine wishes to block you, contact info here may be useful to avoid that.
+      useragent_suffix: ""
+        # Number of seconds to keep a connection in the pool.
+      keepalive_expiry: 5.0
+        # Define one or more proxies you wish to use.
+        # see https://www.python-httpx.org/advanced/#http-proxying
+        # If there are more than one proxy for one protocol (http, https), requests to
+        # the engines are distributed in a round-robin fashion
+      proxies: {}
+        # Extra seconds to add in order to account for the time taken by the proxy
+      extra_proxy_timeout: 10.0
+        # If you use multiple network interfaces, define from which IP the
+        # requests must be made
+      source_ips: []
+        # Number of retries in case of an HTTP error. On each retry, SearXNG uses
+        # a different proxy and source ip.
+      retries: null
+        # Retry request on some HTTP status codes.
+        # true : on HTTP status code between 400 and 599
+        # 403 : on HTTP status code 403
+        # [403, 429]: on HTTP status code 403 and 429
+      retry_on_http_error: null
+      max_redirects: 30
+        # Maximum number of allowed connections, or null for no limits.
+      pool_connections: 100
+        # Number of allowed keep-alive connections, or null for no limits.
+      pool_maxsize: 10
+      enable_http2: true
+      using_tor_proxy: false
+
+      # External plugin configuration, for more details see
+      # https://docs.searxng.org/dev/plugins.html
+    plugins: []
+
+    enabled_plugins:
+        # these plugins are enabled if nothing is configured ..
+      - 'Hash plugin'
+      - 'Search on category select'
+      - 'Self Informations'
+      - 'Tracker URL remover'
+        # activation depends on outgoing.using_tor_proxy
+      - 'Ahmia blacklist'
+        # these plugins are disabled if nothing is configured ..
+      # - 'Hostname replace'  # see hostname_replace configuration below
+      # - 'Open Access DOI rewrite'
+      # - 'Vim-like hotkeys'
+
+      # Configuration of the "Hostname replace" plugin:
+    hostname_replace: []
+      # '(.*\.)?youtube\.com$': 'invidious.example.com'
+      # '(.*\.)?youtu\.be$': 'invidious.example.com'
+      # '(.*\.)?youtube-noocookie\.com$': 'yotter.example.com'
+      # '(.*\.)?reddit\.com$': 'teddit.example.com'
+      # '(.*\.)?redd\.it$': 'teddit.example.com'
+      # '(www\.)?twitter\.com$': 'nitter.example.com'
+      # # to remove matching host names from result list, set value to false
+      # 'spam\.example\.com': false
+
+    # A list of the categories that are displayed as tabs in the user interface.
+    # Categories not listed here can still be searched with the Search syntax.
+    categories_as_tabs:
+      general:
+      images:
+      videos:
+      news:
+      map:
+      music:
+      it:
+      science:
+      files:
+      social media:
+
+    doi_resolvers:
+      oadoi.org: 'https://oadoi.org/'
+      doi.org: 'https://doi.org/'
+      doai.io: 'https://dissem.in/'
+      sci-hub.se: 'https://sci-hub.se/'
+      sci-hub.do: 'https://sci-hub.do/'
+      scihubtw.tw: 'https://scihubtw.tw/'
+      sci-hub.st: 'https://sci-hub.st/'
+      sci-hub.bar: 'https://sci-hub.bar/'
+      sci-hub.it.nf: 'https://sci-hub.it.nf/'
+
+    default_doi_resolver: 'oadoi.org'
+
+      # List of engine configurations. For an overview,
+      # see https://docs.searxng.org/admin/engines/settings.html#engine-settings
+      # https://docs.searxng.org/dev/engine_overview.html#general-engine-configuration
+      # Refer to the default settings.yml for detailed information.
+
+      # If use_default_settings is true, the engines section is merged according
+      # to the engine name.
+
+    # engines: []
+
+########################################################################################
 
   lookup:
     rootgroup: root
