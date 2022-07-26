@@ -17,6 +17,7 @@ searxng:
         ephemeral: true
         pod_prefix: null
         restart_policy: on-failure
+        restart_sec: 2
         separator: null
         stop_timeout: null
     paths:
@@ -31,6 +32,7 @@ searxng:
       name: searxng
       shell: /usr/sbin/nologin
       uid: null
+      gid: null
     containers:
       redis:
         image: docker.io/library/redis:alpine

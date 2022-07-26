@@ -22,6 +22,8 @@ SearXNG user session is initialized at boot:
   compose.lingering_managed:
     - name: {{ searxng.lookup.user.name }}
     - enable: {{ searxng.install.rootless }}
+    - require:
+      - user: {{ searxng.lookup.user.name }}
 
 SearXNG paths are present:
   file.directory:

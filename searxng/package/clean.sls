@@ -33,6 +33,9 @@ SearXNG user session is not initialized at boot:
   compose.lingering_managed:
     - name: {{ searxng.lookup.user.name }}
     - enable: false
+    - onlyif:
+      - fun: user.info
+        name: {{ searxng.lookup.user.name }}
 
 SearXNG user account is absent:
   user.absent:
@@ -40,11 +43,14 @@ SearXNG user account is absent:
     - purge: {{ searxng.install.remove_all_data_for_sure }}
     - require:
       - SearXNG is absent
+    - retry:
+        attempts: 5
+        interval: 2
 
 {%- if searxng.install.remove_all_data_for_sure %}
 
 SearXNG paths are absent:
-  file.directory:
+  file.absent:
     - names:
       - {{ searxng.lookup.paths.base }}
     - require:
