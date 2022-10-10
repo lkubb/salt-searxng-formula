@@ -72,3 +72,15 @@ SearXNG is installed:
     - require:
       - user: {{ searxng.lookup.user.name }}
 {%- endif %}
+
+{%- if searxng.install.autoupdate_service is not none %}
+
+Podman autoupdate service is managed for SearXNG:
+{%-   if searxng.install.rootless %}
+  compose.systemd_service_{{ "enabled" if searxng.install.autoupdate_service else "disabled" }}:
+    - user: {{ searxng.lookup.user.name }}
+{%-   else %}
+  service.{{ "enabled" if searxng.install.autoupdate_service else "disabled" }}:
+{%-   endif %}
+    - name: podman-auto-update.timer
+{%- endif %}

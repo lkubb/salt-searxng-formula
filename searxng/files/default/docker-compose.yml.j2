@@ -18,6 +18,10 @@ services:
       - SETGID
       - SETUID
       # - DAC_OVERRIDE
+{%- if searxng.install.autoupdate %}
+    labels:
+      - io.containers.autoupdate=registry
+{%- endif %}
 
   searxng:
     container_name: searxng
@@ -42,6 +46,10 @@ services:
       options:
         max-size: "1m"
         max-file: "1"
+{%- if searxng.install.autoupdate %}
+    labels:
+      - io.containers.autoupdate=registry
+{%- endif %}
 
 networks:
   searxng:

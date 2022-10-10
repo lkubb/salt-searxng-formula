@@ -8,6 +8,18 @@
 include:
   - {{ sls_config_clean }}
 
+{%- if searxng.install.autoupdate_service %}
+
+Podman autoupdate service is disabled for SearXNG:
+{%-   if searxng.install.rootless %}
+  compose.systemd_service_disabled:
+    - user: {{ searxng.lookup.user.name }}
+{%-   else %}
+  service.disabled:
+{%-   endif %}
+    - name: podman-auto-update.timer
+{%- endif %}
+
 SearXNG is absent:
   compose.removed:
     - name: {{ searxng.lookup.paths.compose }}
