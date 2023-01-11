@@ -16,5 +16,6 @@ SearXNG environment files are absent:
       - {{ searxng.lookup.paths.config_searxng }}
       - {{ searxng.lookup.paths.config_redis }}
       - {{ searxng.lookup.paths.config }}
+      - {{ searxng.lookup.paths.base | path_join(".saltcache.yml") }}
     - require:
       - sls: {{ sls_service_clean }}
