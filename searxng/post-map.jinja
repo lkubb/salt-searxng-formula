@@ -21,16 +21,34 @@
     Automatically generate secrets if they were not specified.
 -#}
 
-{%- if not mapdata | traverse("config:server:secret_key") %}
-  {#- This has been deprecated and will be removed in v3005 @FIXME -#}
-  {%- do mapdata | update_dict_key_value("config:server",
-        {
-          "secret_key": salt["grains.get_or_set_hash"](
-                    'searxng.config.server.secret_key',
-                    length=64,
-                    chars="abcdefghijklmnopqrstuvwxyz0123456789"
-                  )
-        }
-      )
-  %}
-{%- endif %}
+
+{#- Since grains.get_or_set_hash was removed in v3005, cache generated secrets -#}
+{%- set current_cached = {} -%}
+{%- set cache_updated = [] -%}
+{%- set cache_file = mapdata.lookup.paths.base | path_join(".saltcache.yml") -%}
+{%- if salt["file.file_exists"](cache_file) -%}
+  {%- do current_cached.update(salt["jinja.import_yaml"](cache_file)) -%}
+{%- else -%}
+  {%- do salt["file.mkdir"](mapdata.lookup.paths.base) -%}
+{%- endif -%}
+
+{%- for var, val in current_cached.items() -%}
+  {%- do mapdata | set_dict_key_value(var, val) -%}
+{%- endfor -%}
+
+{%- for secret in [
+      "config:server:secret_key",
+    ] -%}
+  {%- if not mapdata | traverse(secret) -%}
+    {%- do current_cached.update({secret: salt["random.get_str"](64, punctuation=false, uppercase=false)}) -%}
+    {%- do cache_updated.append(true) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if cache_updated -%}
+  {%- for var, val in current_cached.items() -%}
+    {%- do mapdata | set_dict_key_value(var, val) -%}
+  {%- endfor -%}
+  {%- do salt["file.write"](cache_file, salt["slsutil.serialize"]("yaml", current_cached)) -%}
+  {%- do salt["file.set_mode"](cache_file, "0600") -%}
+{%- endif -%}
