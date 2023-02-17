@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
+{%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as searxng with context %}
 {%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
 
@@ -36,11 +35,28 @@ SearXNG paths are present:
     - require:
       - user: {{ searxng.lookup.user.name }}
 
+{%- if searxng.install.podman_api %}
+
+SearXNG podman API is enabled:
+  compose.systemd_service_enabled:
+    - name: podman
+    - user: {{ searxng.lookup.user.name }}
+    - require:
+      - SearXNG user session is initialized at boot
+
+SearXNG podman API is available:
+  compose.systemd_service_running:
+    - name: podman
+    - user: {{ searxng.lookup.user.name }}
+    - require:
+      - SearXNG user session is initialized at boot
+{%- endif %}
+
 SearXNG compose file is managed:
   file.managed:
     - name: {{ searxng.lookup.paths.compose }}
-    - source: {{ files_switch(['docker-compose.yml', 'docker-compose.yml.j2'],
-                              lookup='SearXNG compose file is present'
+    - source: {{ files_switch(["docker-compose.yml", "docker-compose.yml.j2"],
+                              lookup="SearXNG compose file is present"
                  )
               }}
     - mode: '0644'

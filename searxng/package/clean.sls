@@ -1,8 +1,14 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
-{%- set sls_config_clean = tplroot ~ '.config.clean' %}
+{#-
+    Removes the searxng, redis containers
+    and the corresponding user account and service units.
+    Has a depency on `searxng.config.clean`_.
+    If ``remove_all_data_for_sure`` was set, also removes all data.
+#}
+
+{%- set tplroot = tpldir.split("/")[0] %}
+{%- set sls_config_clean = tplroot ~ ".config.clean" %}
 {%- from tplroot ~ "/map.jinja" import mapdata as searxng with context %}
 
 include:
@@ -40,6 +46,25 @@ SearXNG compose file is absent:
     - name: {{ searxng.lookup.paths.compose }}
     - require:
       - SearXNG is absent
+
+{%- if searxng.install.podman_api %}
+
+SearXNG podman API is unavailable:
+  compose.systemd_service_dead:
+    - name: podman
+    - user: {{ searxng.lookup.user.name }}
+    - onlyif:
+      - fun: user.info
+        name: {{ searxng.lookup.user.name }}
+
+SearXNG podman API is disabled:
+  compose.systemd_service_disabled:
+    - name: podman
+    - user: {{ searxng.lookup.user.name }}
+    - onlyif:
+      - fun: user.info
+        name: {{ searxng.lookup.user.name }}
+{%- endif %}
 
 SearXNG user session is not initialized at boot:
   compose.lingering_managed:
