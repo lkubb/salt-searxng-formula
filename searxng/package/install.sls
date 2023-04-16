@@ -39,14 +39,14 @@ SearXNG paths are present:
 
 SearXNG podman API is enabled:
   compose.systemd_service_enabled:
-    - name: podman
+    - name: podman.socket
     - user: {{ searxng.lookup.user.name }}
     - require:
       - SearXNG user session is initialized at boot
 
 SearXNG podman API is available:
   compose.systemd_service_running:
-    - name: podman
+    - name: podman.socket
     - user: {{ searxng.lookup.user.name }}
     - require:
       - SearXNG user session is initialized at boot

@@ -51,7 +51,7 @@ SearXNG compose file is absent:
 
 SearXNG podman API is unavailable:
   compose.systemd_service_dead:
-    - name: podman
+    - name: podman.socket
     - user: {{ searxng.lookup.user.name }}
     - onlyif:
       - fun: user.info
@@ -59,7 +59,7 @@ SearXNG podman API is unavailable:
 
 SearXNG podman API is disabled:
   compose.systemd_service_disabled:
-    - name: podman
+    - name: podman.socket
     - user: {{ searxng.lookup.user.name }}
     - onlyif:
       - fun: user.info
