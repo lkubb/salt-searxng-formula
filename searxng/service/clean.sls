@@ -1,6 +1,5 @@
 # vim: ft=sls
 
-
 {#-
     Stops the searxng, redis container services
     and disables them at boot time.

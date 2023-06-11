@@ -2,7 +2,7 @@
 
 {%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as searxng with context %}
-{%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
+{%- from tplroot ~ "/libtofsstack.jinja" import files_switch with context %}
 
 SearXNG user account is present:
   user.present:
@@ -55,14 +55,16 @@ SearXNG podman API is available:
 SearXNG compose file is managed:
   file.managed:
     - name: {{ searxng.lookup.paths.compose }}
-    - source: {{ files_switch(["docker-compose.yml", "docker-compose.yml.j2"],
-                              lookup="SearXNG compose file is present"
+    - source: {{ files_switch(
+                    ["docker-compose.yml", "docker-compose.yml.j2"],
+                    config=searxng,
+                    lookup="SearXNG compose file is present",
                  )
               }}
     - mode: '0644'
     - user: root
     - group: {{ searxng.lookup.rootgroup }}
-    - makedirs: True
+    - makedirs: true
     - template: jinja
     - makedirs: true
     - context:
