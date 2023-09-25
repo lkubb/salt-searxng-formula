@@ -34,7 +34,7 @@ SearXNG environment files are managed:
     - template: jinja
     - require:
       - user: {{ searxng.lookup.user.name }}
-    - watch_in:
+    - require_in:
       - SearXNG is installed
     - context:
         searxng: {{ searxng | json }}

@@ -34,4 +34,4 @@ SearXNG service is running:
 {%- endif %}
     - watch:
       - SearXNG is installed
-      - SearXNG settings are managed
+      - sls: {{ sls_config_file }}
