@@ -46,6 +46,6 @@ SearXNG settings are managed:
     # this needs to be world-readable, otherwise the container
     # fails to start
     - mode: '0644'
-    - user: root
+    - user: {{ searxng.lookup.user.name }}
     - group: {{ searxng.lookup.user.name }}
     - dataset: {{ searxng.config | json }}

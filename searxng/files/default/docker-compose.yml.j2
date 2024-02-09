@@ -31,7 +31,7 @@ services:
     ports:
      - "{{ searxng.config.server.port }}:8080"
     volumes:
-      - {{ searxng.lookup.paths.config }}:/etc/searxng:rw
+      - {{ searxng.lookup.paths.config }}:/etc/searxng:rw,Z
     env_file:
       - {{ searxng.lookup.paths.config_searxng }}
     cap_drop:
