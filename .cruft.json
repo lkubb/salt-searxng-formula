@@ -31,7 +31,8 @@
           }
         },
         "paths": {
-          "config": "config"
+          "config": "config",
+          "redis_data": "redis"
         }
       },
       "settings": {

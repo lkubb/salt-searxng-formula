@@ -28,6 +28,7 @@ searxng:
       config_searxng: searxng.env
       config_redis: redis.env
       config: config
+      redis_data: redis
     user:
       groups: []
       home: null

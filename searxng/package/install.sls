@@ -29,6 +29,7 @@ SearXNG paths are present:
     - names:
       - {{ searxng.lookup.paths.base }}
       - {{ searxng.lookup.paths.config }}
+      - {{ searxng.lookup.paths.redis_data }}
     - user: {{ searxng.lookup.user.name }}
     - group: {{ searxng.lookup.user.name }}
     - makedirs: true
