@@ -44,7 +44,6 @@ SearXNG paths are present:
     - names:
       - {{ searxng.lookup.paths.base }}
       - {{ searxng.lookup.paths.config }}
-      - {{ searxng.lookup.paths.redis_data }}
     - user: {{ searxng.lookup.user.name }}
     - group: {{ searxng.lookup.user.name }}
     - makedirs: true
@@ -86,6 +85,15 @@ SearXNG compose file is managed:
     - context:
         searxng: {{ searxng | json }}
 
+SearXNG redis data dir has correct permissions:
+  compose.file_directory:
+    - name: {{ searxng.lookup.paths.redis_data }}
+    - project: {{ searxng.lookup.compose.project_name }}
+    - user: 999
+    - group: 1000
+    - require:
+      - SearXNG compose file is managed
+
 SearXNG is installed:
   compose.installed:
     - name: {{ searxng.lookup.paths.compose }}
@@ -105,6 +113,7 @@ SearXNG is installed:
     - user: {{ searxng.lookup.user.name }}
     - require:
       - user: {{ searxng.lookup.user.name }}
+      - SearXNG redis data dir has correct permissions
 {%- endif %}
 
 {%- if searxng.install.autoupdate_service is not none %}
