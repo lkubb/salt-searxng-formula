@@ -65,6 +65,7 @@ repos:
           (?x)^(
                 kitchen.vagrant.yml|
                 test/.*/states/.*\.sls|
+                .copier-answers.yml|
                 pillar.example
           )$
   - repo: https://github.com/warpnet/salt-lint
